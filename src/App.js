@@ -57,39 +57,50 @@ class Quiz extends Component {
     super(props)
     this.state = {
                    currentQuestionId: 0,
-                   responses: []
+                   responses: [],
+                   completed: false
                  }
   }
 
   handleNextQuestion(currentResponse){
+
+    let currentQuestionId = this.state.currentQuestionId
     let newResponses = this.state.responses.concat({
-                           id: this.state.currentQuestionId,
+                           id: currentQuestionId,
                            response: currentResponse
                          })
 
-    if (this.state.currentQuestionId < this.props.questions.length - 1) {
+    if (currentQuestionId < this.props.questions.length) {
+      currentQuestionId++
+
       this.setState({
-        currentQuestionId: this.state.currentQuestionId + 1,
-        responses: newResponses
-      })
-    } else {
-      this.setState({
-        currentQuestionId: this.props.questions.length - 1,
-        responses: newResponses
-      }, () => {
-        let correctResponses = this.props.questions.filter((q, i) => {
-          return(q.correctResponse == this.state.responses[i].response)
-        })
-        alert(correctResponses.length)
+        currentQuestionId: currentQuestionId,
+        responses: newResponses,
+        completed: (currentQuestionId == this.props.questions.length)
       })
     }
   }
 
+  showResult(){
+    let correctResponses = this.props.questions.filter((q, i) => {
+          return(q.correctResponse == this.state.responses[i].response)
+        })
+    alert(correctResponses.length)
+  }
+
   render(){
     return(
-      <Question question={this.props.questions[this.state.currentQuestionId]}
-                questionsNumber={this.props.questions.length}
-                handleNextQuestion={this.handleNextQuestion.bind(this)} />
+      <div>
+        { !this.state.completed ?
+          <Question question={this.props.questions[this.state.currentQuestionId]}
+                    questionsNumber={this.props.questions.length}
+                    handleNextQuestion={this.handleNextQuestion.bind(this)} /> :
+          <div>
+            <p>Test completed! Well done :)</p>
+            <button onClick={this.showResult.bind(this)}>Show results</button>
+          </div>
+        }
+      </div>
     )
   }
 }
@@ -126,9 +137,7 @@ class App extends Component {
           <h1 className="App-title">Welcome to React</h1>
         </header>
         <p>Questions</p>
-
         <Quiz questions={questions} />
-
       </div>
     )
   }
