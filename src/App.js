@@ -62,25 +62,27 @@ class Quiz extends Component {
   }
 
   handleNextQuestion(currentResponse){
-    console.log(this.props.questions.length)
-    if (this.state.currentQuestionId < this.props.questions.length - 1) {
-
-      let newResponses = this.state.responses.concat({
+    let newResponses = this.state.responses.concat({
                            id: this.state.currentQuestionId,
                            response: currentResponse
                          })
+
+    if (this.state.currentQuestionId < this.props.questions.length - 1) {
       this.setState({
         currentQuestionId: this.state.currentQuestionId + 1,
         responses: newResponses
       })
-
     } else {
-      alert(this.result())
+      this.setState({
+        currentQuestionId: this.props.questions.length - 1,
+        responses: newResponses
+      }, () => {
+        let correctResponses = this.props.questions.filter((q, i) => {
+          return(q.correctResponse == this.state.responses[i].response)
+        })
+        alert(correctResponses.length)
+      })
     }
-  }
-
-  result(){
-    return 3;
   }
 
   render(){
