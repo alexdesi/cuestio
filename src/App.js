@@ -14,7 +14,7 @@ class Responses extends Component {
     return (
       this.props.responses.map(r =>
         <div>
-          <input onClick={ this.handleOnClick.bind(this) } 
+          <input onClick={ this.handleOnClick.bind(this) }
                  type="radio" id={`response-${r[0]}`}
                  name="response"
                  value={r[0]} />
@@ -81,11 +81,12 @@ class Quiz extends Component {
     }
   }
 
-  showResult(){
+  score(){
     let correctResponses = this.props.questions.filter((q, i) => {
           return(q.correctResponse == this.state.responses[i].response)
         })
-    alert(correctResponses.length)
+    let score = correctResponses.length/this.state.responses.length
+    return(score)
   }
 
   render(){
@@ -97,7 +98,8 @@ class Quiz extends Component {
                     handleNextQuestion={this.handleNextQuestion.bind(this)} /> :
           <div>
             <p>Test completed! Well done :)</p>
-            <button onClick={this.showResult.bind(this)}>Show results</button>
+            <p>Your score is: {this.score()}</p>
+            {/*<button onClick={this.showResult.bind(this)}>Show result</button>*/}
           </div>
         }
       </div>
@@ -106,9 +108,9 @@ class Quiz extends Component {
 }
 
 class App extends Component {
-  constructor(props){
-    super(props)
-  }
+  // constructor(props){
+  //   super(props)
+  // }
 
   render() {
     let questions = [{
