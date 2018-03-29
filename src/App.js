@@ -4,19 +4,28 @@ import './App.css';
 class Responses extends Component {
   constructor(props) {
     super(props)
+    this.state = { selectedOption: null }
   }
 
-  handleOnClick(e){
+  // handleOnClick(e){
+  //   this.props.handleSelectOption(e.target.value)
+  // }
+
+  handleOptionChange(e){
+    this.setState({ selectedOption: e.target.value })
     this.props.handleSelectOption(e.target.value)
   }
 
   render() {
+    console.log(this.state.selectedOption)
     return (
       this.props.responses.map(r =>
         <div>
-          <input onClick={ this.handleOnClick.bind(this) }
-                 type="radio" id={`response-${r[0]}`}
+          {/*<input onClick={ this.handleOnClick.bind(this) }*/}
+          <input type="radio" id={`response-${r[0]}`}
                  name="response"
+                 checked={ this.state.selectedOption == r[0] }
+                 onChange ={ this.handleOptionChange.bind(this) }
                  value={r[0]} />
           <label for={`response-${r[0]}`}>{r[1]}</label>
         </div>
