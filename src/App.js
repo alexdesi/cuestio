@@ -2,31 +2,21 @@ import React, { Component } from 'react';
 import './App.css';
 
 class Responses extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { selectedOption: null }
-  }
-
-  // handleOnClick(e){
-  //   this.props.handleSelectOption(e.target.value)
-  // }
-
   handleOptionChange(e){
-    this.setState({ selectedOption: e.target.value })
     this.props.handleSelectOption(e.target.value)
   }
 
   render() {
-    console.log(this.state.selectedOption)
+    let question = this.props.question
     return (
-      this.props.responses.map(r =>
+      question.responses.map(r =>
         <div>
-          {/*<input onClick={ this.handleOnClick.bind(this) }*/}
           <input type="radio" id={`response-${r[0]}`}
                  name="response"
-                 checked={ this.state.selectedOption == r[0] }
-                 onChange ={ this.handleOptionChange.bind(this) }
-                 value={r[0]} />
+                 onChange={ this.handleOptionChange.bind(this) }
+                 value={r[0]}
+                 key={`${question.id}-${r[0]}`}
+          />
           <label for={`response-${r[0]}`}>{r[1]}</label>
         </div>
       )
@@ -37,7 +27,7 @@ class Responses extends Component {
 class Question extends Component {
   constructor(props){
     super(props)
-    this.state = { response: -1 }
+    this.state = { response: null }
   }
 
   handleSelectOption(response) {
@@ -45,7 +35,12 @@ class Question extends Component {
   }
 
   handleConfirm() {
-    this.props.handleNextQuestion(this.state.response)
+    if (this.state.response === null) {
+      alert('Hey! No response is not a response :)')
+    }else{
+      this.props.handleNextQuestion(this.state.response)
+      this.setState({response: null })
+    }
   }
 
   render(){
@@ -53,8 +48,8 @@ class Question extends Component {
       <div>
         <p>Question {this.props.question.id} of {this.props.questionsNumber}</p>
         <h3>{ this.props.question.body }</h3>
-        <Responses responses={ this.props.question.responses }
-                   handleSelectOption={ this.handleSelectOption.bind(this) } />
+        <Responses question={ this.props.question }
+                   handleSelectOption={ this.handleSelectOption.bind(this) }/>
         <button onClick={ this.handleConfirm.bind(this) }>Confirm</button>
       </div>
     )
@@ -108,7 +103,6 @@ class Quiz extends Component {
           <div>
             <p>Test completed! Well done :)</p>
             <p>Your score is: {this.score()}</p>
-            {/*<button onClick={this.showResult.bind(this)}>Show result</button>*/}
           </div>
         }
       </div>
@@ -117,10 +111,6 @@ class Quiz extends Component {
 }
 
 class App extends Component {
-  // constructor(props){
-  //   super(props)
-  // }
-
   render() {
     let questions = [{
       id: 1,
